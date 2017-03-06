@@ -7,7 +7,7 @@ namespace Interactive_Photobooth
     static class Program
     {
         // Nice boolean to tell the program whether or not to attach console for easy debugging
-        static bool debug = true;
+        public static bool DEBUG = true;
 
         /// <summary>
         /// The main entry point for the application.
@@ -15,7 +15,7 @@ namespace Interactive_Photobooth
         [STAThread]
         static void Main()
         {
-            if (debug)
+            if (DEBUG)
             {
                 if (!AllocConsole()) // Think this will only return false if console is already allocated to the program
                 {

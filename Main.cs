@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Interactive_Photobooth.Python;
+
 namespace Interactive_Photobooth
 {
     public partial class Main : Form
@@ -15,6 +17,12 @@ namespace Interactive_Photobooth
         public Main()
         {
             InitializeComponent();
+
+            // Example of process heavy python script being run on main thread.
+            //new PythonScript("test.py", "10").Start();
+            // Example of same process being run on another thread
+            //new PythonScript("test.py", "10").StartOnNewThread();
+
         }
     }
 }

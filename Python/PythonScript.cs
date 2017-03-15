@@ -12,6 +12,7 @@ namespace Interactive_Photobooth.Python
     /// </summary>
     class PythonScript
     {
+        string _pythonScript;
         // The python file to run. Will be pre-appended with the Scripts directory. E.g. "Content/Scripts/file.py"
         string _file;
         // The arguments that should be passed to the python script
@@ -25,6 +26,7 @@ namespace Interactive_Photobooth.Python
         /// <param name="args">The arguments to pass to the script.</param>
         public PythonScript(string file, string args = "")
         {
+            _pythonScript = file;
             string rawFileString = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), string.Format(@"Content\Scripts\{0}", file));
             _file = string.Format("\"{0}\"", rawFileString);
 
@@ -49,17 +51,27 @@ namespace Interactive_Photobooth.Python
         {
             ProcessStartInfo start = new ProcessStartInfo();
             start.FileName = "python.exe";
-            start.Arguments = string.Format("{0} {1}", _file, _args);
+            start.Arguments = string.Format("-u {0} {1}", _file, _args);
             start.UseShellExecute = false;
             start.RedirectStandardOutput = true;
+            start.RedirectStandardError = true;
 
             using (Process process = Process.Start(start))
             {
-                using (StreamReader reader = process.StandardOutput)
+                process.OutputDataReceived += (s, o) =>
                 {
-                    string output = reader.ReadToEnd();
-                    Console.Write(output);
-                }
+                    string output = string.Format("[{0}] {1} - {2}", DateTime.Now, _pythonScript, o.Data);
+                    Console.WriteLine(output);
+                };
+                process.ErrorDataReceived += (s, o) =>
+                {
+                    if(!string.IsNullOrEmpty(o.Data))
+                        Console.WriteLine("Python Error: " + o.Data);
+                };
+
+                process.BeginErrorReadLine();
+                process.BeginOutputReadLine();
+                process.WaitForExit();
             }
         }
     }

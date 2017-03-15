@@ -60,13 +60,16 @@ namespace Interactive_Photobooth.Python
             {
                 process.OutputDataReceived += (s, o) =>
                 {
-                    string output = string.Format("[{0}] {1} - {2}", DateTime.Now, _pythonScript, o.Data);
-                    Console.WriteLine(output);
+                    if (!string.IsNullOrEmpty(o.Data))
+                    {
+                        string output = string.Format("[{0}] {1} - {2}", DateTime.Now, _pythonScript, o.Data);
+                        Console.WriteLine(output);
+                    }
                 };
                 process.ErrorDataReceived += (s, o) =>
                 {
                     if(!string.IsNullOrEmpty(o.Data))
-                        Console.WriteLine("Python Error: " + o.Data);
+                        Console.WriteLine("Python Error (" + _pythonScript + "): " + o.Data);
                 };
 
                 process.BeginErrorReadLine();

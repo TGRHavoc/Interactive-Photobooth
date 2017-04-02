@@ -14,7 +14,7 @@ public class ColorSourceView : MonoBehaviour
     {
         if (ImageObject)
         {
-            gameObject.GetComponent<RawImage>().material.SetTextureScale("_MainTex", new Vector2(1,1));
+            gameObject.GetComponent<RawImage>().material.SetTextureScale("_MainTex", new Vector2(-1, 1));
         }else
         {
             gameObject.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, 1));

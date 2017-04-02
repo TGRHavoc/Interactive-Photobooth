@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -23,7 +24,7 @@ public class TakePhoto : MonoBehaviour
         if (!Directory.Exists(baseDir))
             Directory.CreateDirectory(baseDir);
 
-        string formatFile = string.Format(fileFormat, "test_file" );
+        string formatFile = string.Format(fileFormat, string.Format(fileFormat, DateTime.Now.ToFileTimeUtc() ));
 
         string filename = Path.Combine(baseDir, formatFile);
 

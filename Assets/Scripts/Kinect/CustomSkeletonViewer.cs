@@ -9,6 +9,11 @@ public class CustomSkeletonViewer : MonoBehaviour
     public Material BoneMaterial;
     public GameObject BodySourceManager;
 
+    // An array of cloth handlers
+    public AbstractClothHandler[] clothHandlers;
+
+    public bool showSkeleton = true;
+
     private Dictionary<ulong, GameObject> _Bodies = new Dictionary<ulong, GameObject>();
     private BodySourceManager _BodyManager;
 
@@ -103,7 +108,10 @@ public class CustomSkeletonViewer : MonoBehaviour
                     _Bodies[body.TrackingId] = CreateBodyObject(body.TrackingId);
                 }
 
-                RefreshBodyObject(body, _Bodies[body.TrackingId]);
+                if (showSkeleton)
+                    RefreshBodyObject(body, _Bodies[body.TrackingId]);
+
+                UpdateClothHandlers(body);
             }
         }
     }
@@ -125,7 +133,7 @@ public class CustomSkeletonViewer : MonoBehaviour
             jointObj.name = jt.ToString();
             jointObj.transform.parent = body.transform;
         }
-
+        
         return body;
     }
 
@@ -154,6 +162,27 @@ public class CustomSkeletonViewer : MonoBehaviour
             else
             {
                 lr.enabled = false;
+            }
+        }
+    }
+
+    private void UpdateClothHandlers(Kinect.Body body)
+    {
+        foreach(AbstractClothHandler handler in clothHandlers)
+        {
+            for (Kinect.JointType jt = Kinect.JointType.SpineBase; jt <= Kinect.JointType.ThumbRight; jt++)
+            {
+                if (jt != handler.jointTypeToAttachTo) // If it's not the joint the handler wants,
+                    continue; // Skip!
+
+                Kinect.Joint joint = body.Joints[jt];
+
+                Kinect.CoordinateMapper mapper = _BodyManager.Sensor().CoordinateMapper;
+                Kinect.ColorSpacePoint screenPos = mapper.MapCameraPointToColorSpace(joint.Position);
+                //Vector3 jointPos = new Vector3(screenPos.X, screenPos.Y, 10);
+                Vector3 legacy = GetVector3FromJoint(_BodyManager.Sensor().CoordinateMapper, joint);
+
+                handler.UpdatePosition(body.TrackingId, joint, legacy);
             }
         }
     }

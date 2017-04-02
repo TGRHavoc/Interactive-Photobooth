@@ -35,6 +35,8 @@ sysinfo.txt
 
 # Captures during development
 Assets/Captures/
+Captures.meta
 
 # Python scripts during development
 Assets/Python/
+Python.meta

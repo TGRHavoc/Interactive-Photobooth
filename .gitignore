@@ -33,6 +33,7 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
+
 # Captures during development
 Assets/Captures/
 Captures.meta

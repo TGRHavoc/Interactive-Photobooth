@@ -179,10 +179,10 @@ public class CustomSkeletonViewer : MonoBehaviour
 
                 Kinect.CoordinateMapper mapper = _BodyManager.Sensor().CoordinateMapper;
                 Kinect.ColorSpacePoint screenPos = mapper.MapCameraPointToColorSpace(joint.Position);
-                Vector3 jointPos = new Vector3(screenPos.X, screenPos.Y, 10);
-                //Vector3 legacy = GetVector3FromJoint(_BodyManager.Sensor().CoordinateMapper, joint);
+                //Vector3 jointPos = new Vector3(screenPos.X, screenPos.Y, 10);
+                Vector3 legacy = GetVector3FromJoint(_BodyManager.Sensor().CoordinateMapper, joint);
 
-                handler.UpdatePosition(body.TrackingId, joint, jointPos);
+                handler.UpdatePosition(body.TrackingId, joint, legacy);
             }
         }
     }

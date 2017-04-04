@@ -44,11 +44,6 @@ public abstract class AbstractClothHandler : UnityEngine.MonoBehaviour
         }
     }
 
-    private void OnGUI()
-    {
-        DrawObject();
-    }
-
     protected GameObject CreateGameObjectForSprite(string objectName, Cloth cloth, GameObject parent = null)
     {
         GameObject obj = new GameObject(objectName);
@@ -100,7 +95,6 @@ public abstract class AbstractClothHandler : UnityEngine.MonoBehaviour
     //Joint should be of JointType "joinTypeToAttachTo"
     public abstract void UpdatePosition(ulong uniqueId, Kinect.Joint joint, Vector3 jointWorldPosition);
 
-    public abstract void DrawObject();
 
 
 }

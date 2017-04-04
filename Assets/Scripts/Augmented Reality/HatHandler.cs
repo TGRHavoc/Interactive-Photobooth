@@ -11,6 +11,7 @@ public class HatHandler : AbstractClothHandler
     {
         Cloth hat = CurrentCloth;
         GameObject hatObj = GetOrCreateObject("Hat_" + uniqeId, hat, mainUI);
+
         /*
         Camera cam = Camera.main;
         float height = 2f * cam.orthographicSize;
@@ -20,6 +21,12 @@ public class HatHandler : AbstractClothHandler
         float newX = jointWorldPosition.x - width;
         float newY = jointWorldPosition.y - height;
         */
+
+        hatObj.GetComponent<Image>().sprite = hat.image;
+
+        hatObj.transform.localScale = new Vector3(hat.scaleX, hat.scaleY, 1);
+
+        // Set the pos relative to the parent obj (Main UI). I don't know why this works but, it does :(
         hatObj.transform.localPosition = new Vector3((jointWorldPosition.x * 100) + (hat.xOffset*100), (jointWorldPosition.y * 100) + (hat.yOffset*100), 10);
     }
 }

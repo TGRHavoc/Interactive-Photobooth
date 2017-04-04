@@ -38,7 +38,13 @@ public abstract class AbstractClothHandler : UnityEngine.MonoBehaviour
 
     private void Update()
     {
-        if (_selected < 0 || _selected >= clothes.Length)
+
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            _selected = (_selected + 1) % clothes.Length;
+        }
+
+        if (_selected < 0 || _selected >= clothes.Length) // If someone has changed the value in the editor, we gotta make sure it's wrapped
         {
             _selected = _selected % clothes.Length;
         }

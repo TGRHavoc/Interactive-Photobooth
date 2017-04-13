@@ -172,17 +172,17 @@ public class CustomSkeletonViewer : MonoBehaviour
         {
             for (Kinect.JointType jt = Kinect.JointType.SpineBase; jt <= Kinect.JointType.ThumbRight; jt++)
             {
-                if (jt != handler.jointTypeToAttachTo) // If it's not the joint the handler wants,
+                if (jt != handler.jointType) // If it's not the joint the handler wants,
                     continue; // Skip!
 
                 Kinect.Joint joint = body.Joints[jt];
 
                 Kinect.CoordinateMapper mapper = _BodyManager.Sensor().CoordinateMapper;
                 Kinect.ColorSpacePoint screenPos = mapper.MapCameraPointToColorSpace(joint.Position);
-                //Vector3 jointPos = new Vector3(screenPos.X, screenPos.Y, 10);
+                Vector3 jointPos = new Vector3(screenPos.X, screenPos.Y, joint.Position.Z); // Z should be distance to kinect plane
                 Vector3 legacy = GetVector3FromJoint(_BodyManager.Sensor().CoordinateMapper, joint);
 
-                handler.UpdatePosition(body.TrackingId, joint, legacy);
+                handler.UpdatePosition(body.TrackingId, joint, jointPos);
             }
         }
     }

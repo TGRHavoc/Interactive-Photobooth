@@ -54,6 +54,9 @@ public class TorsoHandler : AbstractClothHandler
         double userWidth = Math.Abs(leftPointShoulder.X - rightPointShoulder.X); // Calculates user's width in pixels
         double userHeight = Math.Abs(shoulderCenter.Y - hipCenter.Y); // Calulates height in pixels
 
+        //double userWidth = Math.Sqrt(Math.Pow(leftPointShoulder.X, 2) - Math.Pow(rightPointShoulder.X, 2));
+        //double userHeight = Math.Sqrt(Math.Pow(shoulderCenter.Y, 2) - Math.Pow(hipCenter.Y, 2));
+
         UserData data = new UserData() { height = Convert.ToSingle(userHeight), width = Convert.ToSingle(userWidth) };
         if (usersData.ContainsKey(id))
         {
@@ -86,11 +89,13 @@ public class TorsoHandler : AbstractClothHandler
         UserData data = usersData[uniqueId];
 
         torsoProp.GetComponent<Image>().sprite = CurrentCloth.image;
-        
+
         //TODO: scale with data.height and data.widt
         // Scales the hats based on how far they are from the kinect
-        torsoProp.transform.localScale = new Vector3( (CurrentCloth.scaleX / jointWorldPosition.z),
-                                                     (CurrentCloth.scaleY / jointWorldPosition.z), 1);
+        torsoProp.transform.localScale = new Vector3( CurrentCloth.scaleX,
+                                                      CurrentCloth.scaleY, 1);
+        
+        torsoProp.GetComponent<RectTransform>().sizeDelta = new Vector2(data.width, data.height);
 
         torsoProp.transform.localPosition = new Vector3(jointWorldPosition.x + (CurrentCloth.xOffset / jointWorldPosition.z),
                                                      jointWorldPosition.y + (CurrentCloth.yOffset / jointWorldPosition.z), 10);

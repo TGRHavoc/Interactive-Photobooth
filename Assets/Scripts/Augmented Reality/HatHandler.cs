@@ -6,6 +6,12 @@ using Kinect = Windows.Kinect;
 
 public class HatHandler : AbstractClothHandler
 {
+    // Hats don't need to calculate anything before beingg drawn.
+    public override void PreDrawMaths(ulong id, Kinect.Body body)
+    { }
+    public override void UpdateExtra(Kinect.Body body, Kinect.CoordinateMapper mapper)
+    { }
+
     public override void RemoveClothFor(ulong id)
     {
         GameObject hatObj = GetOrCreateObject("Hat_" + id, CurrentCloth);
@@ -13,7 +19,7 @@ public class HatHandler : AbstractClothHandler
         Destroy(hatObj); // Remove it :(
     }
 
-    public override void UpdatePosition(ulong uniqeId, Kinect.Joint joint, Vector3 jointWorldPosition)
+    public override void UpdatePosition(ulong uniqeId, Vector3 jointWorldPosition)
     {
         Cloth hat = CurrentCloth;
         GameObject hatObj = GetOrCreateObject("Hat_" + uniqeId, hat);

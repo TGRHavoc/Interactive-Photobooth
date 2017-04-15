@@ -55,6 +55,7 @@ public abstract class AbstractClothHandler : UnityEngine.MonoBehaviour
         GameObject obj = new GameObject(objectName);
 
         Image img = obj.AddComponent<Image>(); // Make sure it has an image
+        obj.AddComponent<RectTransform>();
 
         img.sprite = cloth.image;
 
@@ -100,9 +101,10 @@ public abstract class AbstractClothHandler : UnityEngine.MonoBehaviour
 
     public abstract void RemoveClothFor(ulong id);
 
-    //Joint should be of JointType "joinTypeToAttachTo"
-    public abstract void UpdatePosition(ulong uniqueId, Kinect.Joint joint, Vector3 jointWorldPosition);
+    public abstract void UpdatePosition(ulong uniqueId, Vector3 jointWorldPosition);
 
+    public abstract void PreDrawMaths(ulong id, Kinect.Body body);
 
+    public abstract void UpdateExtra(Kinect.Body body, Kinect.CoordinateMapper mapper);
 
 }

@@ -12,6 +12,13 @@ public class TorsoHandler : AbstractClothHandler
     public Vector2 leftOffset = new Vector2(0,0);
     public Vector2 rightOffset = new Vector2(0,0);
 
+    struct UserData
+    {
+        public float width;
+        public float height;
+    }
+    private Dictionary<ulong, UserData> usersData = new Dictionary<ulong, UserData>();
+
     private float leftAngle = 0;
     private float rightAngle = 0;
 
@@ -35,6 +42,26 @@ public class TorsoHandler : AbstractClothHandler
 
         double rightRads = Math.Atan2(rightPointShoulder.Y - rightPointArm.Y, rightPointShoulder.X - rightPointArm.X);
         rightAngle = Convert.ToSingle(rightRads * 180 / Math.PI);
+
+        ColorSpacePoint hipCenter = mapper.MapCameraPointToColorSpace(body.Joints[JointType.SpineBase].Position);
+        ColorSpacePoint shoulderCenter = mapper.MapCameraPointToColorSpace(body.Joints[JointType.SpineShoulder].Position);
+
+        /*
+         Hbody = |xshouldercenter − xhipcenter|
+         Wbody = |xleftshoulder − xrightshoulder|
+        */
+
+        double userWidth = Math.Abs(leftPointShoulder.X - rightPointShoulder.X); // Calculates user's width in pixels
+        double userHeight = Math.Abs(shoulderCenter.Y - hipCenter.Y); // Calulates height in pixels
+
+        UserData data = new UserData() { height = Convert.ToSingle(userHeight), width = Convert.ToSingle(userWidth) };
+        if (usersData.ContainsKey(id))
+        {
+            usersData[id] = data;
+        }else
+        {
+            usersData.Add(id, data);
+        }
     }
 
     public override void RemoveClothFor(ulong id)
@@ -42,6 +69,11 @@ public class TorsoHandler : AbstractClothHandler
         GameObject prop = GetOrCreateObject("Torso_" + id, CurrentCloth);
         GameObject lSleve = GetOrCreateObject("LeftSleve_" + id, CurrentCloth);
         GameObject rSleve = GetOrCreateObject("RightSleve_" + id, CurrentCloth);
+
+        if (usersData.ContainsKey(id))
+        {
+            usersData.Remove(id);
+        }
 
         Destroy(prop);
         Destroy(lSleve);
@@ -51,11 +83,14 @@ public class TorsoHandler : AbstractClothHandler
     public override void UpdatePosition(ulong uniqueId, Vector3 jointWorldPosition)
     {
         GameObject torsoProp = GetOrCreateObject("Torso_" + uniqueId, CurrentCloth);
+        UserData data = usersData[uniqueId];
 
         torsoProp.GetComponent<Image>().sprite = CurrentCloth.image;
-
+        
+        //TODO: scale with data.height and data.widt
         // Scales the hats based on how far they are from the kinect
-        torsoProp.transform.localScale = new Vector3((CurrentCloth.scaleX / jointWorldPosition.z), (CurrentCloth.scaleY / jointWorldPosition.z), 1);
+        torsoProp.transform.localScale = new Vector3( (CurrentCloth.scaleX / jointWorldPosition.z),
+                                                     (CurrentCloth.scaleY / jointWorldPosition.z), 1);
 
         torsoProp.transform.localPosition = new Vector3(jointWorldPosition.x + (CurrentCloth.xOffset / jointWorldPosition.z),
                                                      jointWorldPosition.y + (CurrentCloth.yOffset / jointWorldPosition.z), 10);

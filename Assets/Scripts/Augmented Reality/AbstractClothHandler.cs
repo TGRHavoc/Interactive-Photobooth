@@ -103,7 +103,7 @@ public abstract class AbstractClothHandler : UnityEngine.MonoBehaviour
 
     public abstract void UpdatePosition(ulong uniqueId, Vector3 jointWorldPosition);
 
-    public abstract void PreDrawMaths(ulong id, Kinect.Body body);
+    public abstract void PreDrawMaths(ulong id, Kinect.Body body, Kinect.CoordinateMapper mapper);
 
     public abstract void UpdateExtra(Kinect.Body body, Kinect.CoordinateMapper mapper);
 

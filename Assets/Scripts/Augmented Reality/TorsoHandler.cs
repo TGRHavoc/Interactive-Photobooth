@@ -15,19 +15,25 @@ public class TorsoHandler : AbstractClothHandler
     private float leftAngle = 0;
     private float rightAngle = 0;
 
-    public override void PreDrawMaths(ulong id, Body body)
+    public override void PreDrawMaths(ulong id, Body body, CoordinateMapper mapper)
     {
         //TODO: Calculate stuff (e.g. euclidean distance between shoulders)
         Windows.Kinect.Joint leftShoulder = body.Joints[JointType.ShoulderLeft];
         Windows.Kinect.Joint leftArm = body.Joints[JointType.ElbowLeft];
 
-        double leftRads = Math.Atan2(leftShoulder.Position.Y - leftArm.Position.Y, leftShoulder.Position.X - leftArm.Position.X);
+        ColorSpacePoint leftPointShoulder = mapper.MapCameraPointToColorSpace(leftShoulder.Position);
+        ColorSpacePoint leftPointArm = mapper.MapCameraPointToColorSpace(leftArm.Position);
+
+        double leftRads = Math.Atan2(leftPointShoulder.Y - leftPointArm.Y, leftPointShoulder.X - leftPointArm.X);
         leftAngle = Convert.ToSingle(leftRads * 180 / Math.PI);
 
         Windows.Kinect.Joint rightShoulder = body.Joints[JointType.ShoulderRight];
         Windows.Kinect.Joint rightArm = body.Joints[JointType.ElbowRight];
 
-        double rightRads = Math.Atan2(rightShoulder.Position.Y - rightArm.Position.Y, rightShoulder.Position.X - rightArm.Position.X);
+        ColorSpacePoint rightPointShoulder = mapper.MapCameraPointToColorSpace(rightShoulder.Position);
+        ColorSpacePoint rightPointArm = mapper.MapCameraPointToColorSpace(rightArm.Position);
+
+        double rightRads = Math.Atan2(rightPointShoulder.Y - rightPointArm.Y, rightPointShoulder.X - rightPointArm.X);
         rightAngle = Convert.ToSingle(rightRads * 180 / Math.PI);
     }
 
@@ -93,7 +99,7 @@ public class TorsoHandler : AbstractClothHandler
         rightSleve.GetComponent<RectTransform>().pivot = new Vector2(0.74f, 1);
 
         // Set their angles. Don't ask why this works, I don't know :(
-        leftSleve.transform.localRotation = Quaternion.Euler(0, 180, leftAngle + 80);
-        rightSleve.transform.localRotation = Quaternion.Euler(180, 0,  rightAngle - 80);
+        leftSleve.transform.localRotation = Quaternion.Euler(0, 0, leftAngle - 90);
+        rightSleve.transform.localRotation = Quaternion.Euler(180, 180,  rightAngle + 90);
     }
 }

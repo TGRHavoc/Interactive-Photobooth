@@ -7,7 +7,7 @@ using Kinect = Windows.Kinect;
 public class HatHandler : AbstractClothHandler
 {
     // Hats don't need to calculate anything before beingg drawn.
-    public override void PreDrawMaths(ulong id, Kinect.Body body)
+    public override void PreDrawMaths(ulong id, Kinect.Body body, Kinect.CoordinateMapper mapper)
     { }
     public override void UpdateExtra(Kinect.Body body, Kinect.CoordinateMapper mapper)
     { }

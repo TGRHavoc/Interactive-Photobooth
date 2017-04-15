@@ -89,8 +89,10 @@ public class CustomSkeletonViewer : MonoBehaviour
         {
             if (!trackedIds.Contains(trackingId))
             {
+                RemoveBodyClothes(trackingId); // make sure handlers know about it being destroyed
                 Destroy(_Bodies[trackingId]);
                 _Bodies.Remove(trackingId);
+
             }
         }
 
@@ -180,10 +182,20 @@ public class CustomSkeletonViewer : MonoBehaviour
                 Kinect.CoordinateMapper mapper = _BodyManager.Sensor().CoordinateMapper;
                 Kinect.ColorSpacePoint screenPos = mapper.MapCameraPointToColorSpace(joint.Position);
                 Vector3 jointPos = new Vector3(screenPos.X, screenPos.Y, joint.Position.Z); // Z should be distance to kinect plane
-                Vector3 legacy = GetVector3FromJoint(_BodyManager.Sensor().CoordinateMapper, joint);
+                //Vector3 legacy = GetVector3FromJoint(_BodyManager.Sensor().CoordinateMapper, joint);
 
                 handler.UpdatePosition(body.TrackingId, joint, jointPos);
             }
+        }
+    }
+
+
+    private void RemoveBodyClothes(ulong id)
+    {
+        foreach (AbstractClothHandler handler in clothHandlers)
+        {
+            Debug.Log("calling handler.RemoveClothFor(" + id + ")");
+            handler.RemoveClothFor(id);
         }
     }
 

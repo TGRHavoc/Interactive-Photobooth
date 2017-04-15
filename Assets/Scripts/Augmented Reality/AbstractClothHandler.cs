@@ -19,7 +19,7 @@ public abstract class AbstractClothHandler : UnityEngine.MonoBehaviour
         public float yOffset;
     }
 
-    public GameObject mainUI;
+    public GameObject parentObj;
     public GameObject kinectImageCube;
 
     public int _selected = 0;
@@ -68,17 +68,17 @@ public abstract class AbstractClothHandler : UnityEngine.MonoBehaviour
         return obj;
     }
 
-    protected GameObject GetOrCreateObject(string name, Cloth cloth, GameObject mainUI)
+    protected GameObject GetOrCreateObject(string name, Cloth cloth)
     {
         GameObject obj = null;
         bool found = false;
 
-        if (mainUI == null)
+        if (parentObj == null)
         {
-            throw new ArgumentNullException("mainUI cannot be null");
+            throw new ArgumentNullException("parentObj cannot be null");
         }
 
-        foreach (Transform child in mainUI.transform)
+        foreach (Transform child in parentObj.transform)
         {
             if (child.name == name)
             {
@@ -91,12 +91,14 @@ public abstract class AbstractClothHandler : UnityEngine.MonoBehaviour
         // If hatSprite is null, we couldn't find it. Time to create it.
         if (!found)
         {
-            obj = CreateGameObjectForSprite(name, cloth, mainUI);
+            obj = CreateGameObjectForSprite(name, cloth, parentObj);
             Debug.Log("Created \"" + name + "\"");
         }
 
         return obj; // Should never be null..
     }
+
+    public abstract void RemoveClothFor(ulong id);
 
     //Joint should be of JointType "joinTypeToAttachTo"
     public abstract void UpdatePosition(ulong uniqueId, Kinect.Joint joint, Vector3 jointWorldPosition);
